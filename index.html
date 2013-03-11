@@ -1,0 +1,37 @@
+<html>
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		var update = function() {
+			$.ajax({
+	    		url: 'games',
+	    		dataType: 'json',
+	    		success: function(data) {
+	        		$.each(data.games, function(i,row){
+	        			if($('#'+row.gameId).length == 0){
+		            		$('<tr>').attr('id', row.gameId).
+		            			append($('<td>').text(row.gameId)).
+		                		append($('<td>').text(row.description)).
+		                		append($('<td>').text(row.score1+' - '+row.score2)).
+		                		append($('<td>').text(row.status)).
+		                		append($('<td>').text(row.gameId)).appendTo('#games');
+		                } else {
+		                	//update existing game row
+		                }
+	        		});
+	    		}
+			});
+		};
+	</script>
+
+	<h3>March Madness Lottery</h3>
+
+</head>
+<body>
+	<input type="button" value="Refresh" OnClick="update();"/>
+	<table id='games' class='games'>
+		<tr><th>Id</th><th>Game</th><th>Score</th><th>Status</th><th>Player</th></tr>
+	</table>
+</body>
+</html>
