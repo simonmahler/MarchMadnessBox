@@ -37,6 +37,7 @@ app.get('/games', function(req, res){
 				var status = clean.status;
 				var score1 = clean.score1;
 				var score2 = clean.score2;
+				var digits = score1 > score2 ? score1[score1.length-1]+':'+score2[score2.length-1] : score2[score2.length-1]+':'+score1[score1.length-1];
 				games.push(
 					{
 						rank: p[1], 
@@ -44,7 +45,8 @@ app.get('/games', function(req, res){
 						gameId: p[5], 
 						status: status, 
 						score1: score1, 
-						score2: score2 
+						score2: score2,
+						digits: digits 
 					});
 			}
 		}
