@@ -18,9 +18,10 @@ app.get('/games', function(req, res){
 
 	var cleanup = function(rawText){ return rawText.replace(/%20/g, ' ').replace('^', ''); };
 	var parseDescription = function(rawDescription){
-		var p = rawDescription.match(/(.*)\((.*)\)/);
-		if(p.length == 3) {
-			return {game: p[1], status: p[2]};
+		var p = rawDescription.match(/(.*) \((.*)\)/);
+		var p2 = rawDescription.match(/ ([0-9]*) (.*) ([0-9]*) (.*)/);
+		if(p.length == 3 && p2.length == 5) {
+			return {game: p[1], status: p[2], score1: p2[1], score2: p2[3]};
 		} else {
 			return {game: '', status: ''};
 		}
@@ -34,14 +35,16 @@ app.get('/games', function(req, res){
 				var clean = parseDescription(cleanup(p[2]));
 				var description = clean.game;
 				var status = clean.status;
+				var score1 = clean.score1;
+				var score2 = clean.score2;
 				games.push(
 					{
 						rank: p[1], 
 						description: description, 
 						gameId: p[5], 
 						status: status, 
-						score1: 12, 
-						score2: 25 
+						score1: score1, 
+						score2: score2 
 					});
 			}
 		}
@@ -65,4 +68,4 @@ app.get('/games', function(req, res){
 
 var port = process.env.PORT || 5000;
 app.listen(port);
-console.log('Listening on port 3000');
+console.log('Listening on port '+port);
