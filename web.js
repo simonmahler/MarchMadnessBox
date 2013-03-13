@@ -16,14 +16,14 @@ app.get('/games', function(req, res){
 
 	var options = { host: 'sports.espn.go.com', port: 80, path: '/ncb/bottomline/scores' };
 
-	var cleanup = function(rawText){ return rawText.replace(/%20/g, ' ').replace('^', ''); };
+	var cleanup = function(rawText){ return rawText.replace(/%20/g, ' ').replace('^', '').replace(/%26/g, '&'); };
 	var parseDescription = function(rawDescription){
 		var p = rawDescription.match(/(.*) \((.*)\)/);
 		var p2 = rawDescription.match(/ ([0-9]*) (.*) ([0-9]*) (.*)/);
-		if(p.length == 3 && p2.length == 5) {
+		if(p != null && p.length == 3 && p2 != null && p2.length == 5) {
 			return {game: p[1], status: p[2], score1: p2[1], score2: p2[3]};
 		} else {
-			return {game: '', status: ''};
+			return {game: '', status: '', score1: 0, score2: 0};
 		}
 	};
 	var parse = function(chunk){
