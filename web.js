@@ -4,6 +4,7 @@ var app = express();
 var fs = require('fs');
 
 app.use("/js", express.static(__dirname + '/js'));
+app.use("/css", express.static(__dirname + '/css'));
 
 app.get('/', function (req, res) {
     res.writeHead(200, { 'Content-type': 'text/html' });
@@ -59,13 +60,17 @@ app.get('/games', function(req, res){
 
 	http.get(options, function(r) {
 		console.log("Got response: " + r.statusCode);
-  		r.on('data', function (chunk) {
-    		data = parse(chunk.toString());
-    		res.send(data);
+		var body = '';
+		r.on('data', function (chunk) {
+			body += chunk;
+  		});
+
+  		r.on('end', function(){
+  			res.send(parse(body.toString()));
   		});
 	}).on('error', function(e) {
  		console.log("Got error: " + e.message);
-	});
+	});	
 });
 
 var port = process.env.PORT || 5000;

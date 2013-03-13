@@ -1,37 +1,60 @@
 <html>
 <head>
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
-
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 	<script type="text/javascript">
-		var update = function() {
+		var players = {
+
+		}
+
+		var createListItem = function(game){
+			return '<li id='+game.gameId+'>'+updateListItem(game)+'</li>';
+		}
+
+		var getLabel = function(status){
+			if(status.indexOf('FINAL') !== -1){
+				return '<span class="label label-important">Final</span>';
+			} else {
+				return '<span class="label label-success">'+status+'</span>';
+			}
+		}
+
+		var updateListItem = function(game){
+			return '<a tabindex="-1" href="http://sports.espn.go.com/ncb/boxscore?gameId='+game.gameId+'">'+game.description+' '+getLabel(game.status)+'</a>';
+		}
+		var update = function(){
 			$.ajax({
 	    		url: 'games',
 	    		dataType: 'json',
 	    		success: function(data) {
 	        		$.each(data.games, function(i,row){
-	        			if($('#'+row.gameId).length == 0){
-		            		$('<tr>').attr('id', row.gameId).
-		            			append($('<td>').text(row.gameId)).
-		                		append($('<td>').text(row.description)).
-		                		append($('<td>').text(row.score1+' - '+row.score2)).
-		                		append($('<td>').text(row.status)).
-		                		append($('<td>').text(row.gameId)).appendTo('#games');
-		                } else {
-		                	//update existing game row
-		                }
-	        		});
-	    		}
-			});
-		};
+	        			if($('#'+row.gameId).length != 0){
+	        				//alert(row.gameId.toString());
+	        				$('#'+row.gameId).html(updateListItem(row));
+		    			} else {
+		    				$('#gamelist').append(createListItem(row));
+		    			}
+		    		});
+		    		$('#lastUpdated').html('Last updated: '+(new Date()).toString());
+	        	}
+	        });
+      	};
+
+      	update();
+      	setInterval(update, 60000);
 	</script>
 
 	<h3>March Madness Lottery</h3>
 
 </head>
 <body>
-	<input type="button" value="Refresh" OnClick="update();"/>
-	<table id='games' class='games'>
-		<tr><th>Id</th><th>Game</th><th>Score</th><th>Status</th><th>Player</th></tr>
-	</table>
+	<div class="dropdown clearfix">
+        <ul id='gamelist' class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display: block; position:static; margin-bottom: 5px; width: 500px;">
+        </ul>
+    </div>
+   	<div id='lastUpdated'></div>
+
 </body>
 </html>
